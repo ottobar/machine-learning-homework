@@ -67,7 +67,7 @@ Y = y == 1:num_labels;
 
 A1 = [ones(m, 1) X];
 Z2 = A1 * Theta1';
-Z2_SigmoidGradient = [ones(size(Z2, 1), 1) Z2];
+Z2_SigmoidGradient = sigmoidGradient([ones(size(Z2, 1), 1) Z2]);
 A2 = [ones(size(Z2, 1), 1) sigmoid(Z2)];
 Z3 = A2 * Theta2';
 A3 = sigmoid(Z3);
@@ -81,29 +81,14 @@ unregularized_cost = (1 / m) * sum(sum((-Y .* log(A3)) - ((1 - Y) .* log(1 - A3)
 cost_regularization = (lambda / (2 * m)) * (sum(sumsq(Theta1_for_regularization, 2)) + sum(sumsq(Theta2_for_regularization, 2)));
 J = unregularized_cost + cost_regularization;
 
-D1 = zeros(size(Theta1));
-D2 = zeros(size(Theta2));
+delta_3 = A3 - Y;
+delta_2 = ((delta_3 * Theta2) .* Z2_SigmoidGradient)(:, 2:end);
 
-%Delta_3 = A3 - Y;
-%size(Delta_3)
+Delta_1 = delta_2' * A1;
+Delta_2 = delta_3' * A2;
 
-for i = 1:m
-  a_3 = A3(i, :);
-  y_i = Y(i, :);
-  delta_3 = a_3 - y_i;
-
-  z_2_sigmoid_gradient = Z2_SigmoidGradient(i, :);
-  delta_2 = ((delta_3 * Theta2) .* (sigmoidGradient(z_2_sigmoid_gradient)))(2:end);
-
-  a_2 = A2(i, :);
-  D2 = D2 + (delta_3' * a_2);
-
-  a_1 = A1(i, :);
-  D1 = D1 + (delta_2' * a_1);
-end
-
-Theta1_grad = (1 / m) * D1;
-Theta2_grad = (1 / m) * D2;
+Theta1_grad = (1 / m) * Delta_1;
+Theta2_grad = (1 / m) * Delta_2;
 
 % -------------------------------------------------------------
 
