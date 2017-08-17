@@ -87,8 +87,13 @@ delta_2 = ((delta_3 * Theta2) .* Z2_SigmoidGradient)(:, 2:end);
 Delta_1 = delta_2' * A1;
 Delta_2 = delta_3' * A2;
 
-Theta1_grad = (1 / m) * Delta_1;
-Theta2_grad = (1 / m) * Delta_2;
+unregularized_theta1_grad = (1 / m) * Delta_1;
+theta1_grad_regularization = (lambda / m) * Theta1_for_regularization;
+unregularized_theta2_grad = (1 / m) * Delta_2;
+theta2_grad_regularization = (lambda / m) * Theta2_for_regularization;
+
+Theta1_grad = unregularized_theta1_grad + theta1_grad_regularization;
+Theta2_grad = unregularized_theta2_grad + theta2_grad_regularization;
 
 % -------------------------------------------------------------
 
