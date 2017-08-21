@@ -53,11 +53,13 @@ error_val   = zeros(m, 1);
 
 % ---------------------- Sample Solution ----------------------
 
-
-
-
-
-
+for i = 1:m
+  X_training_subset = X(1:i, :);
+  y_training_subset = y(1:i);
+  theta = trainLinearReg(X_training_subset, y_training_subset, lambda);
+  error_train(i) = linearRegCostFunction(X_training_subset, y_training_subset, theta, 0);
+  error_val(i) = linearRegCostFunction(Xval, yval, theta, 0);
+end
 
 % -------------------------------------------------------------
 
